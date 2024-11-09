@@ -1,7 +1,6 @@
 {
   "name": "lotsofpixels/module-cronitor-magento2",
   "description": "module for monitoring the cronjob heartbeat with Cornitor",
-  "version": "1.0.0",
   "type": "magento2-module",
   "license": "OSL-3.0",
   "require": {
