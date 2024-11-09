@@ -6,7 +6,7 @@ The monitor sends a heartbeat to Cronitor
 composer require lotsofpixels/module-cronitor-magento2
 ```
 ## Version
-Release 1.0.0
+Release 1.0.1
 
 ## Configuration
 Stores -> Configuration -> Lotsofpixels -> Cronitor

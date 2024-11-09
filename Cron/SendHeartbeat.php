@@ -8,6 +8,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\HTTP\Adapter\Curl;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\Validator\Url;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  *
@@ -34,6 +35,8 @@ class SendHeartbeat
      */
     protected $logger;
 
+    protected $storeManager;
+
 
     /**
      * Data constructor.
@@ -45,13 +48,15 @@ class SendHeartbeat
         \Magento\Framework\HTTP\Client\Curl $curl,
         ScopeConfigInterface                $storeConfig,
         LoggerInterface                     $logger,
-        Url                                 $url
+        Url                                 $url,
+        StoreManagerInterface $storeManager
     )
     {
         $this->storeConfig = $storeConfig;
         $this->_curl = $curl;
         $this->logger = $logger;
         $this->url = $url;
+        $this->storeManager = $storeManager;
 
     }
 
@@ -61,17 +66,30 @@ class SendHeartbeat
      */
     public function execute(): void
     {
+        $cronitorHeaders = [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            "User-Agent" => 'cronitor-magento',
+            "Cronitor-Version" => '1.0.1',
+        ];
+
+        $heartbeatState = '?state=run';
+
+        $env = '&env=' .$this->storeConfig->getValue('cronitor/general/environment');
+
+        $host = '&host=' . $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
+
+        $count = '&metric=count:' . date('i');
+
         if ($this->storeConfig->getValue('cronitor/general/enabled')) {
-            $heartbeatState = '?state=run';
             $heartbeatUrl = $this->storeConfig->getValue('cronitor/general/ping_url');
             if ($this->url->isValid($heartbeatUrl)) {
-                try{
-                $MONITOR_URL = $heartbeatUrl . $heartbeatState;
-                $this->_curl->get($MONITOR_URL);
-                } catch (Exception $ex) {
-                    $this->logger->critical($ex->getMessage());
-                }
-            }}
+                    $MONITOR_URL = $heartbeatUrl . $heartbeatState . $env . $host . $count;
+                    $this->_curl->setHeaders($cronitorHeaders);
+                    $this->_curl->get($MONITOR_URL);
+                    $this->logger->info($MONITOR_URL);
+            }
         }
+    }
 
 }

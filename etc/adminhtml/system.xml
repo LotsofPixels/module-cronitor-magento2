@@ -19,6 +19,12 @@
                     <label>Ping address</label>
                     <comment>Create a account at Cronitor to receive a heartbeat</comment>
                 </field>
+
+                <field id="environment" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Environment</label>
+                    <source_model>Lotsofpixels\Cronitor\Model\Source\Enviroment</source_model>
+                    <comment>Declare the environment, production or staging</comment>
+                </field>
                      </group>
         </section>
     </system>
