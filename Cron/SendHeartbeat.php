@@ -84,7 +84,7 @@ class SendHeartbeat
         if ($this->storeConfig->getValue('cronitor/general/enabled')) {
             $heartbeatUrl = $this->storeConfig->getValue('cronitor/general/ping_url');
             if ($this->url->isValid($heartbeatUrl)) {
-                    $MONITOR_URL = $heartbeatUrl . $heartbeatState . $env . $host . $count;
+                    $MONITOR_URL = $heartbeatUrl . $heartbeatState . $host . $count;
                     $this->_curl->setHeaders($cronitorHeaders);
                     $this->_curl->get($MONITOR_URL);
                     $this->logger->info($MONITOR_URL);
